@@ -1,0 +1,4 @@
+ACTION=="add", SUBSYSTEM=="hid", KERNEL=="0003:1532:0F3C.*", \
+  RUN+="/bin/sh -c 'echo razer_pwm_pc_fan > /sys%p/driver_override; \
+                    echo -n %k > /sys/bus/hid/drivers/hid-generic/unbind 2>/dev/null || true; \
+                    echo -n %k > /sys/bus/hid/drivers/razer_pwm_pc_fan/bind'"
