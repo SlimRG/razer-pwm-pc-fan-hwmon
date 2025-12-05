@@ -1,4 +1,9 @@
+# Force-bind Razer PWM PC Fan Controller (1532:0f3c) to our HID driver.
+# Note: writing driver_override does NOT unbind automatically; we unbind first, then bind.
+# See kernel docs about driver binding/driver_override.
+
 ACTION=="add", SUBSYSTEM=="hid", KERNEL=="0003:1532:0F3C.*", \
-  RUN+="/bin/sh -c 'echo razer_pwm_pc_fan > /sys%p/driver_override; \
-                    echo -n %k > /sys/bus/hid/drivers/hid-generic/unbind 2>/dev/null || true; \
-                    echo -n %k > /sys/bus/hid/drivers/razer_pwm_pc_fan/bind'"
+  RUN+="/bin/sh -c 'dev=/sys%p; \
+                    if [ -L \"$dev/driver\" ]; then echo -n %k > \"$dev/driver/unbind\"; fi; \
+                    echo razer_pwm_pc_fan_controller > \"$dev/driver_override\"; \
+                    echo -n %k > /sys/bus/hid/drivers/razer_pwm_pc_fan_controller/bind'"
